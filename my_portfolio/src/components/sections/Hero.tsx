@@ -78,7 +78,7 @@ export const Hero = () => {
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                   <div className="w-[600px] h-[700px] bg-gray-200 rounded-2xl overflow-hidden relative transition-transform duration-200 group-hover:shadow-1xl">
                     <img
-                      src="/images/photo.jpg"
+                      src=""
                       alt="Kirubel Amare"
                       className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
                     />
