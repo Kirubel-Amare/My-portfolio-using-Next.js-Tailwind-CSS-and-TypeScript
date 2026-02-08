@@ -56,7 +56,7 @@ const socialLinks = [
   },
   {
     icon: <Mail className="w-5 h-5" />,
-    href: "mailto:your.akirubel8@gmail.com",
+    href: "mailto:akirub8@gmail.com",
     label: "Email",
     color: "hover:bg-sky-500 hover:text-white"
   },
@@ -108,10 +108,10 @@ export const Footer = () => {
                 </h3>
               </Link>
               <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
-                Full-stack developer passionate about creating amazing digital experiences. 
+                Full-stack developer passionate about creating amazing digital experiences.
                 Let's build something incredible together.
               </p>
-              
+
               {/* Social Links */}
               <div className="flex space-x-3 mb-6">
                 {socialLinks.map((social, index) => (
@@ -177,7 +177,7 @@ export const Footer = () => {
               </div>
 
               {/* Back to Top */}
-            
+
             </div>
           </div>
         </div>

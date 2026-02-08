@@ -16,8 +16,8 @@ const contactMethods = [
     icon: <Phone className="w-6 h-6" />,
     title: "Phone",
     description: "Mon - Fri from 9am to 6pm",
-    value: "+259 955901762",
-    link: "tel:+259955901762",
+    value: "+251 955901762",
+    link: "tel:+251955901762",
     color: "from-green-500 to-emerald-500"
   },
   {
@@ -57,7 +57,7 @@ export const Contact = () => {
             Let's <span className="text-gradient">Work Together</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Have a project in mind or want to chat? I'm always interested in new opportunities 
+            Have a project in mind or want to chat? I'm always interested in new opportunities
             and challenges. Let's create something amazing together!
           </p>
         </div>
@@ -126,14 +126,14 @@ export const Contact = () => {
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">Current Availability</h3>
                   <p className="text-gray-600">
-                    I'm currently available for new projects starting next month. 
+                    I'm currently available for new projects starting next month.
                     Let's schedule a call to discuss your requirements!
                   </p>
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* Contact Form */}
           <div className="animate-fade-in-up">
             <ContactForm />

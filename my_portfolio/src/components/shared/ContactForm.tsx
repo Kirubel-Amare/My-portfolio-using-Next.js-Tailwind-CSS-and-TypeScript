@@ -21,7 +21,7 @@ export const ContactForm = () => {
     subject: '',
     message: '',
   });
-  
+
   const [status, setStatus] = useState<SubmissionStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -38,10 +38,27 @@ export const ContactForm = () => {
     setErrorMessage('');
 
     try {
-      await saveContactMessage(formData);
+      // Send email via API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      // Optionally save to Supabase as backup (fire and forget)
+      saveContactMessage(formData).catch(err => console.error('Supabase backup failed:', err));
+
       setStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
-      
+
       // Reset success message after 5 seconds
       setTimeout(() => {
         setStatus('idle');
@@ -101,7 +118,7 @@ export const ContactForm = () => {
               placeholder="Your Name"
             />
           </div>
-          
+
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email *
@@ -119,7 +136,7 @@ export const ContactForm = () => {
             />
           </div>
         </div>
-        
+
         <div>
           <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
             Subject
@@ -135,7 +152,7 @@ export const ContactForm = () => {
             placeholder="What's this about?"
           />
         </div>
-        
+
         <div>
           <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
             Message *
@@ -152,11 +169,11 @@ export const ContactForm = () => {
             placeholder="Tell me about your project, timeline, and any specific requirements..."
           />
         </div>
-        
-        <Button 
-          type="submit" 
-          variant="primary" 
-          size="lg" 
+
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
           className="w-full"
           disabled={!isFormValid || status === 'submitting'}
         >
