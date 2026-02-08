@@ -1,59 +1,65 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+let supabase: SupabaseClient | null = null
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase environment variables are not set. Contact form will not work.');
+  console.warn('Supabase environment variables are not set. Contact form will not work.')
+} else {
+  supabase = createClient(supabaseUrl, supabaseAnonKey)
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export { supabase }
 
-// Database functions
+// --------------------
+// Save contact message
+// --------------------
 export const saveContactMessage = async (formData: {
-  name: string;
-  email: string;
-  message: string;
-  subject?: string;
+  name: string
+  email: string
+  message: string
+  subject?: string
 }) => {
-  // Validate environment variables
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase is not configured. Please check your environment variables.');
+  if (!supabase) {
+    throw new Error('Supabase is not configured. Please check your environment variables.')
   }
 
-  // Validate form data
   if (!formData.name || !formData.email || !formData.message) {
-    throw new Error('Please fill in all required fields.');
+    throw new Error('Please fill in all required fields.')
   }
 
-  // Validate email format
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(formData.email)) {
-    throw new Error('Please enter a valid email address.');
+    throw new Error('Please enter a valid email address.')
   }
 
   const { data, error } = await supabase
-    .from('contacts')
-    .insert([{
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      message: formData.message.trim(),
-      subject: formData.subject?.trim() || 'No subject',
-      created_at: new Date().toISOString()
-    }])
-    .select()
+    .from('contact_messages')
+    .insert([
+      {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+        subject: formData.subject?.trim() || 'No subject'
+      }
+    ])
 
   if (error) {
-    console.error('Supabase error:', error);
-    throw new Error('Failed to send message. Please try again later.');
+    console.error('Supabase error:', error)
+    throw new Error(error.message || 'Failed to send message.')
   }
 
   return data
 }
 
+// --------------------
+// Get projects
+// --------------------
 export const getProjects = async () => {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase is not configured.');
+  if (!supabase) {
+    throw new Error('Supabase is not configured.')
   }
 
   const { data, error } = await supabase
@@ -62,25 +68,31 @@ export const getProjects = async () => {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('Supabase error:', error);
-    throw new Error('Failed to load projects.');
+    console.error('Supabase error:', error)
+    throw new Error('Failed to load projects.')
   }
 
   return data
 }
 
-// Test connection function (optional)
+// --------------------
+// Test connection
+// --------------------
 export const testConnection = async () => {
+  if (!supabase) {
+    return { success: false, error: 'Supabase not configured' }
+  }
+
   try {
-    const { data, error } = await supabase
-      .from('contacts')
-      .select('count')
+    const { error } = await supabase
+      .from('contact_messages')
+      .select('id')
       .limit(1)
 
-    if (error) throw error;
-    return { success: true, data };
+    if (error) throw error
+    return { success: true }
   } catch (error) {
-    console.error('Connection test failed:', error);
-    return { success: false, error };
+    console.error('Connection test failed:', error)
+    return { success: false, error }
   }
 }
